@@ -1,13 +1,64 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/estils.css">
+    <title>Casstlevania</title>
+</head>
+<body>
+    <header>
+        <h1>Casstlevania - Menú Principal</h1>
+    </header>
+
+    <div id="menu">
+        <button class="menu-item" onclick="startGame()">Començar joc</button>
+        <button class="menu-item" onclick="showHelp()">Ajuda</button>
+        <button class="menu-item" onclick="showInfo()">Info</button>
+        <button class="menu-item" onclick="showCredits()">Credits</button>
+    </div>
+
+    <div id="help" class="hidden">
+        <h3>Ajuda</h3>
+        <p>Controls del joc:</p>
+        <ul>
+            <li>Fletxa amunt: Moure's amunt</li>
+            <li>Fletxa avall: Moure's avall</li>
+            <li>Fletxa esquerra: Moure's a l'esquerra</li>
+            <li>Fletxa dreta: Moure's a la dreta</li>
+        </ul>
+        <p>Objectiu: Recollir les pilotes i evitar els murs.</p>
+        <button class="back-button" onclick="goBack()">Tornar</button>
+    </div>
+
+    <div id="info" class="hidden">
+        <h3>Informació del navegador</h3>
+        <ul>
+            <li><strong>Navegador: </strong><span id="browser-name"></span></li>
+            <li><strong>Versió del Navegador: </strong><span id="browser-version"></span></li>
+            <li><strong>Sistema Operatiu: </strong><span id="os-info"></span></li>
+            <li><strong>Darrera modificació: </strong><span id="last-modified"></span></li>
+            <li><strong>Idioma: </strong><span id="language"></span></li>
+            <li><strong>URL: </strong><span id="hostname"></span></li>
+        </ul>
+        <button class="back-button" onclick="goBack()">tornar</button>
+    </div>
+
+    <div id="credits" class="hidden">
+        <h3>Crèdits</h3>
+        <p>Autor: Juan Daniel</p>
+        <p>Imatges: <a href="https://algu.com">Autor de les imatges</a></p>
+        <p>Sonoritzacions: <a href="https://nose.com">Autor de sons</a></p>
+        <button class="back-button" onclick="goBack()">Tornar</button>
+    </div>
+    <img class="logo" src="sprites/PAC-MAN_logo.png">
+    <footer>
+        <p>&copy; 2025 Pac-Man - Tots els drets reservats</p>
+    </footer>
+
+    <!-- Canvas amagat per defecte -->
+    <canvas id="gameCanvas" width="800" height="400" style="display: none;"></canvas>
+
+    <script src="src/main.js"></script>
+</body>
 </html>
