@@ -1,4 +1,3 @@
-// Funcions per mostrar les pantalles
 function startGame() {
     // Ocultar el menú
     document.getElementById('menu').classList.add('hidden');
@@ -49,10 +48,10 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Carregar les imatges
-const foodImage = new Image();
-foodImage.src = 'sprites/all.png'; 
-const rockImage = new Image();
-rockImage.src = 'sprites/roca.png'; 
+const allimage = new Image();
+allimage.src = 'sprites/all.png'; 
+const murimage = new Image();
+murimage.src = 'sprites/roca.png'; 
 const terraImage = new Image();
 terraImage.src = 'sprites/terra.png'; 
 const zombieImage = new Image();
@@ -63,7 +62,7 @@ const aiguaImage = new Image();
 aiguaImage.src = 'sprites/aigua.png'; 
 
 
-// Imatges de Pac-Man per a cada direcció
+// Imatges per a cada direcció del don simon
 const simonup = new Image();
 simonup.src = 'sprites/simonup.png'; 
 
@@ -71,7 +70,7 @@ const simondown = new Image();
 simondown.src = 'sprites/simondown.png'; 
 
 const simonleft = new Image();
-simonleft.src = 'sprites/simonup.png'; 
+simonleft.src = 'sprites/simonleft.png'; 
 
 const simonright = new Image();
 simonright.src = 'sprites/simonright.png'; 
@@ -90,12 +89,14 @@ const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
+//IMPORTANT
 const tileSize = 32; // Tamany de cada tile del mapa
 let pacMan = { x: 1, y: 1, dx: 0, dy: 0, currentImage: simonright }; // Posició inicial de Pac-Man i la imatge
 let score = 0; 
 let timeLeft = 90; // Temps restant 
 let gameStartTime = Date.now(); // Emmagatzemar el temps en què es va iniciar el joc
 let gameRunning = true; // Variable per controlar si el joc està en curs
+//IMPORTANT
 
 
 // Funció per dibuixar el mapa
@@ -105,10 +106,10 @@ function drawMap() {
         for (let x = 0; x < mapa[y].length; x++) {
             if (mapa[y][x] === 1) {
                 // Dibuixar mur (roca)
-                ctx.drawImage(rockImage, x * tileSize, y * tileSize, tileSize, tileSize);
+                ctx.drawImage(murimage, x * tileSize, y * tileSize, tileSize, tileSize);
             } else if (mapa[y][x] === 2) {
                 // Dibuixar pilota (menjar)
-                ctx.drawImage(foodImage, x * tileSize, y * tileSize, tileSize, tileSize);
+                ctx.drawImage(allimage, x * tileSize, y * tileSize, tileSize, tileSize);
                 foodLeft++; // Comptar el menjar restant
             } else if (mapa[y][x] === 0) {
                 // Dibuixar terra (espai buit)
@@ -120,7 +121,7 @@ function drawMap() {
                 // Dibuixar dracula
                 ctx.drawImage(draculaImage, x * tileSize, y * tileSize, tileSize, tileSize);
             } else if (mapa[y][x] === 5) {
-                // Dibuixar aigua
+                // Dibuixar aguita
                 ctx.drawImage(aiguaImage, x * tileSize, y * tileSize, tileSize, tileSize);
             }
         }
@@ -166,7 +167,6 @@ function movePacMan() {
 
 
 
-// Funció per dibuixar el joc
 // Funció per dibuixar el joc
 function drawGame() {
     if (!gameRunning) return; // No dibuixar si el joc ha acabat
