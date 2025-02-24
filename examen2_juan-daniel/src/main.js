@@ -6,9 +6,6 @@ function startGame() {
     // Mostrar el canvas amb el joc
     document.getElementById('gameCanvas').style.display = 'block';
 
-    // Sonido de inicio
-    const startSound = new Audio('so/pacman_beginning.wav');
-    startSound.play();
 
     // Aquí cridem a la funció per iniciar el joc
     alert("Iniciant el joc...");
@@ -53,40 +50,53 @@ const ctx = canvas.getContext('2d');
 
 // Carregar les imatges
 const foodImage = new Image();
-foodImage.src = 'sprites/food.png'; // Canvia aquesta ruta per la correcta
+foodImage.src = 'sprites/all.png'; 
 const rockImage = new Image();
-rockImage.src = 'sprites/roca.png'; // Canvia aquesta ruta per la correcta
+rockImage.src = 'sprites/roca.png'; 
+const terraImage = new Image();
+terraImage.src = 'sprites/terra.png'; 
+const zombieImage = new Image();
+zombieImage.src = 'sprites/zombie.png'; 
+const draculaImage = new Image();
+draculaImage.src = 'sprites/dracula.png'; 
+const aiguaImage = new Image();
+aiguaImage.src = 'sprites/aigua.png'; 
+
 
 // Imatges de Pac-Man per a cada direcció
-const pacManUp = new Image();
-pacManUp.src = 'sprites/pacup.png'; // Imatge de Pac-Man mirant amunt
+const simonup = new Image();
+simonup.src = 'sprites/simonup.png'; 
 
-const pacManDown = new Image();
-pacManDown.src = 'sprites/pacdown.png'; // Imatge de Pac-Man mirant avall
+const simondown = new Image();
+simondown.src = 'sprites/simondown.png'; 
 
-const pacManLeft = new Image();
-pacManLeft.src = 'sprites/pacleft.png'; // Imatge de Pac-Man mirant a l'esquerra
+const simonleft = new Image();
+simonleft.src = 'sprites/simonup.png'; 
 
-const pacManRight = new Image();
-pacManRight.src = 'sprites/pacright.png'; // Imatge de Pac-Man mirant a la dreta
+const simonright = new Image();
+simonright.src = 'sprites/simonright.png'; 
 
-// Definir el mapa: 0 = espai buit, 1 = mur, 2 = pilota
+// Definir el mapa: 0 = espai buit, 1 = mur, 2 = pilota, 3 = zombi, 4 = draCULa, 5 = aigua
 const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 2, 0, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 1],
-    [1, 2, 1, 2, 1, 0, 1, 2, 1, 1, 2, 1, 1, 2, 1],
-    [1, 2, 0, 2, 0, 0, 1, 2, 1, 1, 2, 2, 2, 0, 1],
-    [1, 2, 1, 1, 1, 0, 1, 2, 1, 2, 2, 2, 1, 2, 1],
-    [1, 2, 0, 2, 0, 0, 0, 2, 1, 2, 1, 2, 0, 0, 1],
-    [1, 2, 1, 1, 1, 0, 1, 2, 2, 2, 1, 2, 2, 2, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0, 5, 1, 3, 2, 1, 4, 1],
+    [1, 0, 1, 0, 1, 0, 2, 0, 1, 1, 0, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 3, 0, 0, 3, 0, 2, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 2, 0, 0, 0, 2, 1, 1, 0, 1],
+    [1, 0, 0, 0, 2, 0, 0, 1, 0, 2, 2, 1, 1, 0, 1],
+    [1, 0, 0, 3, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1],
+    [1, 2, 1, 1, 2, 0, 0, 0, 5, 1, 1, 1, 3, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
-const tileSize = 40; // Tamany de cada tile del mapa
-let pacMan = { x: 1, y: 1, dx: 0, dy: 0, currentImage: pacManRight }; // Posició inicial de Pac-Man i la imatge
-let score = 0;
-let foodLeft = 0; // Comptador de menjar restant
+const tileSize = 32; // Tamany de cada tile del mapa
+let pacMan = { x: 1, y: 1, dx: 0, dy: 0, currentImage: simonright }; // Posició inicial de Pac-Man i la imatge
+let score = 0; 
+let timeLeft = 90; // Temps restant 
+let gameStartTime = Date.now(); // Emmagatzemar el temps en què es va iniciar el joc
 let gameRunning = true; // Variable per controlar si el joc està en curs
+
 
 // Funció per dibuixar el mapa
 function drawMap() {
@@ -100,10 +110,23 @@ function drawMap() {
                 // Dibuixar pilota (menjar)
                 ctx.drawImage(foodImage, x * tileSize, y * tileSize, tileSize, tileSize);
                 foodLeft++; // Comptar el menjar restant
+            } else if (mapa[y][x] === 0) {
+                // Dibuixar terra (espai buit)
+                ctx.drawImage(terraImage, x * tileSize, y * tileSize, tileSize, tileSize);
+            } else if (mapa[y][x] === 3) {
+                // Dibuixar zombi
+                ctx.drawImage(zombieImage, x * tileSize, y * tileSize, tileSize, tileSize);
+            } else if (mapa[y][x] === 4) {
+                // Dibuixar dracula
+                ctx.drawImage(draculaImage, x * tileSize, y * tileSize, tileSize, tileSize);
+            } else if (mapa[y][x] === 5) {
+                // Dibuixar aigua
+                ctx.drawImage(aiguaImage, x * tileSize, y * tileSize, tileSize, tileSize);
             }
         }
     }
 }
+
 
 // Funció per dibuixar Pac-Man (utilitzant la imatge)
 function drawPacMan() {
@@ -111,8 +134,9 @@ function drawPacMan() {
     ctx.drawImage(pacMan.currentImage, pacMan.x * tileSize, pacMan.y * tileSize, tileSize, tileSize);
 }
 
-// Funció per moure Pac-Man fins a tocar un mur
 function movePacMan() {
+    if (!gameRunning) return; // No moure Pac-Man si el joc ha acabat
+
     let newX = pacMan.x + pacMan.dx;
     let newY = pacMan.y + pacMan.dy;
 
@@ -124,28 +148,52 @@ function movePacMan() {
         // Comprovar si ha recollit una pilota
         if (mapa[newY][newX] === 2) {
             mapa[newY][newX] = 0; // Treure la pilota del mapa
-            score++; // Afegir al marcador
+            score += 5; // Afegir 5 punts a la puntuació
+        }
+
+        // Comprovar si ha tocat un zombi
+        if (mapa[newY][newX] === 3) {
+            gameRunning = false; // Finalitzar el joc
+            ctx.fillText('Joc Perdut! Has tocat un zombi!', canvas.width / 2 - 150, canvas.height / 2); // Mostrar missatge de fi de joc
+        }
+           // Comprovar si ha tocat al dracula aquest
+           if (mapa[newY][newX] === 4) {
+            gameRunning = false; // Finalitzar el joc
+            ctx.fillText('Joc Perdut! Has tocat al dracula sense powerup!', canvas.width / 2 - 150, canvas.height / 2); // Mostrar missatge de fi de joc
         }
     }
 }
 
+
+
+// Funció per dibuixar el joc
 // Funció per dibuixar el joc
 function drawGame() {
+    if (!gameRunning) return; // No dibuixar si el joc ha acabat
+
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Netejar la pantalla
     drawMap();
     drawPacMan();
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
-    ctx.fillText('Puntuació: ' + score, 10, 20); // Mostrar la puntuació
+    
+    // Calcular el temps restant
+    let elapsedTime = (Date.now() - gameStartTime) / 1000; // Temps en segons
+    timeLeft = Math.max(0, 90 - Math.floor(elapsedTime)); // Calcular el temps restant
 
-    // Comprovar si el joc ha acabat
-    if (foodLeft === 0) {
-        gameRunning = false;
-        const endSound = new Audio('so/pacman_intermission.wav');
-        endSound.play(); // Sonido de finalització
-        ctx.fillText('Joc Finalitzat!', canvas.width / 2 - 80, canvas.height / 2); // Mostrar missatge de finalització
+    // Mostrar el temps restant
+    ctx.fillText('Temps restant: ' + timeLeft + 's', 10, 40); // Mostrar el temps
+
+    // Comprovar si el temps ha arribat a 0
+    if (timeLeft <= 0) {
+        gameRunning = false; // Finalitzar el joc
+        ctx.fillText('Temps finaliztat! Joc Finalitzat!', canvas.width / 2 - 150, canvas.height / 2); 
     }
+
+    // Mostrar la puntuació
+    ctx.fillText('Puntuació: ' + score, 10, 20);
 }
+
 
 // Funció per actualitzar el moviment
 function updateMovement() {
@@ -160,19 +208,19 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowUp') {
         pacMan.dx = 0;
         pacMan.dy = -1;
-        pacMan.currentImage = pacManUp; // Imatge de Pac-Man mirant amunt
+        pacMan.currentImage = simonup; // Imatge de Pac-Man mirant amunt
     } else if (e.key === 'ArrowDown') {
         pacMan.dx = 0;
         pacMan.dy = 1;
-        pacMan.currentImage = pacManDown; // Imatge de Pac-Man mirant avall
+        pacMan.currentImage = simondown; // Imatge de Pac-Man mirant avall
     } else if (e.key === 'ArrowLeft') {
         pacMan.dx = -1;
         pacMan.dy = 0;
-        pacMan.currentImage = pacManLeft; // Imatge de Pac-Man mirant a l'esquerra
+        pacMan.currentImage = simonleft; // Imatge de Pac-Man mirant a l'esquerra
     } else if (e.key === 'ArrowRight') {
         pacMan.dx = 1;
         pacMan.dy = 0;
-        pacMan.currentImage = pacManRight; // Imatge de Pac-Man mirant a la dreta
+        pacMan.currentImage = simonright; // Imatge de Pac-Man mirant a la dreta
     }
     updateMovement();
 });
